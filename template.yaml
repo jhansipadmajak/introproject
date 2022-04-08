@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  sam-app
+
+Resources:
+  IntroProjectFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: introproject/
+      Handler: app.lambda_handler
+      Runtime: python3.6
+      Timeout: 300
+      Policies:
+       - AmazonDynamoDBFullAccess
+       - S3FullAccessPolicy: 
+           BucketName: project-intro-bucket1
+      Events:
+        IntroProject:
+          Type: Api 
+          Properties:
+            Path: /introproject
+            Method: get
+
+Outputs:
+  IntroProjectApi:
+    Description: "API Gateway endpoint URL for Prod stage for Intro Project Function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+  IntroProjectFunction:
+    Description: "intro project Lambda Function ARN"
+    Value: !GetAtt IntroProjectFunction.Arn
+  IntroProjectFunctionIamRole:
+    Description: "Implicit IAM Role created for Intro Project Function"
+    Value: !GetAtt IntroProjectFunction.Arn
